@@ -33,7 +33,7 @@ def main(date=None,days=1):
       logger.info(f'Mapping the factura with folio {folio}')
       path = config.property.get('S3_FACTURA_PATH')
       xml = awsService.get_s3_file(config.property.get('S3_BUCKET'),f'{path}{folio}.xml')
-      reports = FacturaMapper.mapXmlToReport(xml)
+      reports = FacturaMapper.map_xml_to_report(xml)
       invoiceDao.delete_reportes_by_folio(folio)
       logger.info(f'Creating {len(reports)} registers for folio {folio}')
       for report in reports:

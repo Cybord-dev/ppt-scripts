@@ -4,7 +4,7 @@ from models.reporte import Reporte
 
 class FacturaMapper:
 
-    def mapXmlToReport(xml):
+    def map_xml_to_report(xml):
         reportes = []
         tree = ET.fromstring(xml)
         totalImpuestosTrasladados = ''
