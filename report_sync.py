@@ -1,8 +1,8 @@
 from config import config
-from invoice_dao import InvoiceDao
-from aws_service import AwsService
+from daos.invoice_dao import InvoiceDao
+from services.aws_service import AwsService
 from utils import utils
-from factura_mapper import FacturaMapper
+from mappers.factura_mapper import FacturaMapper
 from datetime import datetime 
 
 #Configs
@@ -48,5 +48,5 @@ def main(date=None,days=1):
   logger.info(f'Correct Folios{correctFolios}')
   logger.info(f'Incorrect Folios{incorrectFolios}')
 
-#date = datetime(2022, 1, 1, 0, 0)
+#date = datetime(2022, 7, 1, 0, 0)
 main()

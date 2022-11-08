@@ -1,4 +1,4 @@
-from aws_service import AwsService
+from services.aws_service import AwsService
 
 import logging
 import os

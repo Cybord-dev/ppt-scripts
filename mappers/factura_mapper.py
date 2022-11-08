@@ -1,6 +1,6 @@
 import xml.etree.ElementTree as ET
 
-from reporte import Reporte
+from models.reporte import Reporte
 
 class FacturaMapper:
 

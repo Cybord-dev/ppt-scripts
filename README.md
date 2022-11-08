@@ -46,3 +46,4 @@ python3 app.py
 
 - [x] 0.0.1 First Phase
 - [x] 1.0.0 First stable version
+- [x] 1.0.1 Migrating to ppt scripts

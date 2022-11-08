@@ -7,4 +7,5 @@ COPY . /opt/app
 WORKDIR /opt/app
 RUN pip install -r requirements.txt
 
-CMD [ "python", "/app/app.py" ]
+#CMD [ "python", "/app/report_sync.py" ]
+CMD [ "python", "/app/pre_folio_fix.py" ]
