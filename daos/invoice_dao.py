@@ -16,8 +16,8 @@ class InvoiceDao:
                                            'having count(1)>1) t1 '
     __FACTURAS40_BY_YEAR_AND_MONTH = 'SELECT FOLIO,PRE_FOLIO '\
                                      'FROM FACTURAS40 '\
-                                     'WHERE MONTH(fecha_creacion) = MONTH(CURRENT_DATE()) '\
-                                        'AND YEAR(fecha_creacion) = YEAR(CURRENT_DATE())'
+                                     'WHERE YEAR(fecha_creacion) = {} '\
+                                        'AND MONTH(fecha_creacion) = {}'
                                 
     __FACTURAS40_UPDATE_PREFOLIO_BY_DATE = 'UPDATE FACTURAS40 SET PRE_FOLIO = \'{}\'  WHERE FOLIO = \'{}\''
 

@@ -1,4 +1,4 @@
-# report-sync-job
+# ppt-scripts
 
 <!-- ABOUT THE PROJECT -->
 
@@ -30,6 +30,7 @@ python3 ./app.py
 
 ```sh
 docker build -t ppt-platform/report-sync-job:{Version} .
+docker build -t ppt-platform/pre-folio-fix-job:{Version} .
 ```
 
 ## Manual execution

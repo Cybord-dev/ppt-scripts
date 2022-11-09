@@ -27,7 +27,7 @@ def main(year=None,month=None):
        counter = 0
        for (folio,prefolio) in folios:
             counter += 1
-            new_prefolio = f'{month}{str(year)[2:]}-{str(counter).zfill(5)}'
+            new_prefolio = f'{str(month).zfill(2)}{str(year)[2:]}-{str(counter).zfill(5)}'
             logger.info(f'folio:{folio} prefolio:{new_prefolio}')
             json_file = str(awsService.get_s3_file(config.property.get('S3_BUCKET'),f'{path}{folio}.json'))
             json_file = json_file.replace(prefolio, new_prefolio)
@@ -35,5 +35,5 @@ def main(year=None,month=None):
             awsService.update_s3_file(config.property.get('S3_BUCKET'),f'{path}{folio}.json',json_file)
 
 
-main(2021,12)
-#main()
+#main(2022,9)
+main()
