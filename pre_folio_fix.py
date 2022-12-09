@@ -16,8 +16,8 @@ logger = config.property.get('LOGGER')
 def main(year=None,month=None):
     time = datetime.now()
     path = config.property.get('S3_FACTURA_PATH')
-    year = year if year is not None else time.month
-    month = month if month is not None else time.year
+    year = year if year is not None else time.year
+    month = month if month is not None else time.month
     logger.info(f'Executing pre folio fix job month:{month} year:{year}')
     duplicatedRows = invoiceDao.get_duplicated_pre_folios_by_year_and_month(year,month)
     logger.info(f'Duplicated rows {duplicatedRows}')
@@ -35,5 +35,5 @@ def main(year=None,month=None):
             awsService.update_s3_file(config.property.get('S3_BUCKET'),f'{path}{folio}.json',json_file)
 
 
-#main(2022,9)
+#main(2022,12)
 main()
