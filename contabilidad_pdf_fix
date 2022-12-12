@@ -1,0 +1,57 @@
+from config import config
+from daos.invoice_dao import InvoiceDao
+from services.aws_service import AwsService
+from datetime import datetime
+import json
+from clients.invoice_manager_client import InvoiceManagerClient
+
+#Configs
+config = config()
+awsService = AwsService(config)
+invoiceDao = InvoiceDao(config)
+
+
+#Properties
+logger = config.property.get('LOGGER')
+
+def main(year=None,month=None):
+    time = datetime.now()
+    path = config.property.get('S3_FACTURA_PATH')
+    year = year if year is not None else time.year
+    month = month if month is not None else time.month
+    logger.info(f'Executing contabilidad pdf fix job month:{month} year:{year} ')
+    rows = invoiceDao.get_folios_by_year_and_month_and_lines(year,month,['B','C','D','E','F'])
+    logger.info(f'Type to update rows {len(rows)}')
+    for (folio,pre_folio) in rows:
+        logger.info(f'folio {folio} and pre_folio {pre_folio}')
+        json_file = json.loads(awsService.get_s3_file(config.property.get('S3_BUCKET'),f'{path}{folio}.json'))
+        rfcEmisor = json_file.get('rfcEmisor')
+        rfcReceptor = json_file.get('rfcRemitente')
+        direccionEmisor = json_file.get('direccionEmisor')
+        direccionReceptor = json_file.get('direccionReceptor')
+        (emisor,dir_emi) = invoiceDao.get_empresa_by_rfc(rfcEmisor)
+        (receptor,dir_rec) = invoiceDao.get_empresa_by_rfc(rfcReceptor)
+        print(dir_emi not in direccionEmisor)
+        print(dir_rec not in direccionReceptor)
+        print(dir_emi)
+        print(direccionEmisor)
+        if dir_emi.upper() not in direccionEmisor.upper() and dir_rec.upper() not in direccionReceptor.upper():
+            logger.info(f'++++++++updating folio with folio:{folio} for emisor{emisor}')
+            up_emisor = {'direccionEmisor':direccionReceptor}
+            up_receptor = {'direccionReceptor':direccionEmisor}
+            json_file.update(up_emisor)
+            json_file.update(up_receptor)
+            json_file = str(json_file).replace("\'", "\"").replace("True", "true").replace("False", "false")
+            awsService.update_s3_file(config.property.get('S3_BUCKET'),f'{path}{folio}.json',json_file)
+            InvoiceManagerClient.recreate_pdf(folio)
+        else:
+             logger.info(f'------not updating folio:{folio}')
+
+#main()
+main(2022,12)
+main(2022,11)
+main(2022,10)
+main(2022,9)
+main(2022,8)
+main(2022,7)
+main(2022,6)

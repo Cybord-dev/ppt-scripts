@@ -1,4 +1,5 @@
 import mysql.connector
+from utils import utils
 
 class InvoiceDao:
 
@@ -18,8 +19,22 @@ class InvoiceDao:
                                      'FROM FACTURAS40 '\
                                      'WHERE YEAR(fecha_creacion) = {} '\
                                         'AND MONTH(fecha_creacion) = {}'
-                                
-    __FACTURAS40_UPDATE_PREFOLIO_BY_DATE = 'UPDATE FACTURAS40 SET PRE_FOLIO = \'{}\'  WHERE FOLIO = \'{}\''
+    __FACTURAS40_BY_YEAR_AND_MONTH_AND_TYPE = 'SELECT FOLIO,PRE_FOLIO '\
+                                              'FROM FACTURAS40 '\
+                                              'WHERE YEAR(fecha_creacion) = {} '\
+                                                 'AND MONTH(fecha_creacion) = {} '\
+                                                 'AND TIPO_DOCUMENTO = \'{}\''     
+    __FACTURAS40_BY_YEAR_AND_MONTH_AND_LINES = 'SELECT FOLIO,PRE_FOLIO '\
+                                              'FROM FACTURAS40 '\
+                                              'WHERE YEAR(fecha_creacion) = {} '\
+                                                 'AND MONTH(fecha_creacion) = {} '\
+                                                 'AND LINEA_EMISOR IN ({}) ' \
+                                                 'AND LINEA_REMITENTE IN ({})'    
+    __FACTURAS40_UPDATE_PREFOLIO_BY_DATE = 'UPDATE FACTURAS40 SET PRE_FOLIO = \'{}\'  WHERE FOLIO = \'{}\' AND STATUS_FACTURA IN (3)'
+
+    __EMPRESA_BY_RFC =  'SELECT RFC,CALLE '\
+                        ' FROM EMPRESAS '\
+                        ' WHERE RFC = \'{}\' '
 
     def __init__(self,config):
         self.config = config
@@ -97,8 +112,32 @@ class InvoiceDao:
         cursor.execute(self.__FACTURAS40_BY_YEAR_AND_MONTH.format(year,month))
         return cursor.fetchall()
 
+    #Get folios by year and month and document type
+    def get_folios_by_year_and_month_and_type(self,year,month,document_type):
+        self.logger.info(self.__FACTURAS40_BY_YEAR_AND_MONTH_AND_TYPE.format(year,month,document_type))
+        cursor = self.mydb.cursor()
+        cursor.execute(self.__FACTURAS40_BY_YEAR_AND_MONTH_AND_TYPE.format(year,month,document_type))
+        return cursor.fetchall()
+
+    #Get folios by year and month and linea
+    def get_folios_by_year_and_month_and_lines(self,year,month,lines):
+        parameter = utils.set_to_string(lines)
+        self.logger.info(self.__FACTURAS40_BY_YEAR_AND_MONTH_AND_LINES.format(year,month,parameter,parameter))
+        cursor = self.mydb.cursor()
+        cursor.execute(self.__FACTURAS40_BY_YEAR_AND_MONTH_AND_LINES.format(year,month,parameter,parameter))
+        return cursor.fetchall()
+
     def update_factura_prefolio_by_folio(self,folio,prefolio):
         cursor = self.mydb.cursor()
         cursor.execute(self.__FACTURAS40_UPDATE_PREFOLIO_BY_DATE.format(prefolio,folio))
         self.logger.info(f'Updated registers: {cursor.rowcount}')
         self.mydb.commit()   
+
+    #Get empresa by rfc
+    def get_empresa_by_rfc(self,rfc):
+        self.logger.info(self.__EMPRESA_BY_RFC.format(rfc))
+        cursor = self.mydb.cursor()
+        cursor.execute(self.__EMPRESA_BY_RFC.format(rfc))
+        response = cursor.fetchall()
+        for element in response:
+            return element

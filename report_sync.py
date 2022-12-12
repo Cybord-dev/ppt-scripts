@@ -21,7 +21,7 @@ def main(date=None,days=1):
 
   #Get date filters
   to = datetime.now() if date is None  else date
-  since = utils.addDaysToDate(date,days)
+  since = utils.add_days_to_date(date,days)
   
 
   #Get facturas to work
