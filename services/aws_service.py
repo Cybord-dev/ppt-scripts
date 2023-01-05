@@ -20,7 +20,8 @@ class AwsService:
     def get_s3_file(self,bucket,path):
         self.logger.info(f'Getting S3 file in Bucket: {bucket} and path {path}')
         response = self.s3.get_object(Bucket=bucket, Key=path)
-        return response['Body'].read().decode('utf-8') 
+        value = response['Body'].read().decode('utf-8')
+        return value
 
     #Gets ssm parameter
     def get_ssm_parameter_by_path(self,parameter):

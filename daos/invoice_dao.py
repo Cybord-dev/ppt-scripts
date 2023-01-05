@@ -28,8 +28,9 @@ class InvoiceDao:
                                               'FROM FACTURAS40 '\
                                               'WHERE YEAR(fecha_creacion) = {} '\
                                                  'AND MONTH(fecha_creacion) = {} '\
+                                                 'AND STATUS_FACTURA IN (1,2,3,4) ' \
                                                  'AND LINEA_EMISOR IN ({}) ' \
-                                                 'AND LINEA_REMITENTE IN ({})'    
+                                                 'AND LINEA_REMITENTE IN ({}) '    
     __FACTURAS40_UPDATE_PREFOLIO_BY_DATE = 'UPDATE FACTURAS40 SET PRE_FOLIO = \'{}\'  WHERE FOLIO = \'{}\' AND STATUS_FACTURA IN (3)'
 
     __EMPRESA_BY_RFC =  'SELECT RFC,CALLE '\
@@ -120,11 +121,12 @@ class InvoiceDao:
         return cursor.fetchall()
 
     #Get folios by year and month and linea
-    def get_folios_by_year_and_month_and_lines(self,year,month,lines):
-        parameter = utils.set_to_string(lines)
-        self.logger.info(self.__FACTURAS40_BY_YEAR_AND_MONTH_AND_LINES.format(year,month,parameter,parameter))
+    def get_folios_by_year_and_month_and_lines(self,year,month,lines_em,lines_rc):
+        parameter_em = utils.set_to_string(lines_em)
+        parameter_rc = utils.set_to_string(lines_rc)
+        self.logger.info(self.__FACTURAS40_BY_YEAR_AND_MONTH_AND_LINES.format(year,month,parameter_em,parameter_rc))
         cursor = self.mydb.cursor()
-        cursor.execute(self.__FACTURAS40_BY_YEAR_AND_MONTH_AND_LINES.format(year,month,parameter,parameter))
+        cursor.execute(self.__FACTURAS40_BY_YEAR_AND_MONTH_AND_LINES.format(year,month,parameter_em,parameter_rc))
         return cursor.fetchall()
 
     def update_factura_prefolio_by_folio(self,folio,prefolio):

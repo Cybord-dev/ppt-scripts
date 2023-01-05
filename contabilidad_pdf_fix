@@ -20,7 +20,7 @@ def main(year=None,month=None):
     year = year if year is not None else time.year
     month = month if month is not None else time.month
     logger.info(f'Executing contabilidad pdf fix job month:{month} year:{year} ')
-    rows = invoiceDao.get_folios_by_year_and_month_and_lines(year,month,['B','C','D','E','F'])
+    rows = invoiceDao.get_folios_by_year_and_month_and_lines(year,month,['B','C','D','E','F'],['A','B','C','D','E','F'])
     logger.info(f'Type to update rows {len(rows)}')
     for (folio,pre_folio) in rows:
         logger.info(f'folio {folio} and pre_folio {pre_folio}')
@@ -48,10 +48,8 @@ def main(year=None,month=None):
              logger.info(f'------not updating folio:{folio}')
 
 #main()
-main(2022,12)
-main(2022,11)
-main(2022,10)
-main(2022,9)
+
 main(2022,8)
 main(2022,7)
 main(2022,6)
+main(2022,5)
